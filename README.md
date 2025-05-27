@@ -12,8 +12,6 @@ This project is a **C# console application** designed to simulate a fantasy game
   - [Adapter Pattern](#4-adapter-pattern)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
-- [Project Structure](#project-structure)
-- [License](#license)
 
 ## 📘 Project Overview
 
