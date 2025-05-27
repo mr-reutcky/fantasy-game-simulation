@@ -1,7 +1,7 @@
 ﻿namespace Fantasy_Game_Simulation.CharacterModels {
     public class CharacterFactory {
-        public static Character CreateCharacter(string type, string name) {
-            Character character;
+        public static ICharacter CreateCharacter(string type, string name) {
+            ICharacter character;
 
             switch (type.ToLower()) {
                 case "warrior":

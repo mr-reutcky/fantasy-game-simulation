@@ -1,7 +1,7 @@
 ﻿using Fantasy_Game_Simulation.SkillModels;
 
 namespace Fantasy_Game_Simulation.CharacterModels {
-    public abstract class Character {
+    public interface ICharacter {
         public string Name { get; set; }
         public int Health { get; protected set; }
         public int AttackPower { get; protected set; }

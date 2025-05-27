@@ -6,7 +6,7 @@ namespace Fantasy_Game_Simulation {
         private static readonly object _lock = new object();
 
         public int CurrentLevel { get; set; } = 1;
-        public List<Character> Characters { get; } = new List<Character>();
+        public List<ICharacter> Characters { get; } = new List<ICharacter>();
         public string Environment { get; set; } = "Forest";
 
         private GameState() { }
@@ -26,7 +26,7 @@ namespace Fantasy_Game_Simulation {
             Console.WriteLine($"Current Level: {CurrentLevel}");
             Console.WriteLine($"Environment: {Environment}");
             Console.WriteLine("Characters in the game:");
-            foreach (Character character in Characters) {
+            foreach (ICharacter character in Characters) {
                 character.DisplayStats();
             }
         }

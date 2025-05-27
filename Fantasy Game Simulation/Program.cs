@@ -16,8 +16,8 @@ namespace Fantasy_Game_Simulation {
 
             // Factory: Character Creation
             Console.WriteLine("Creating characters using the Factory Pattern...");
-            Character mage = CharacterFactory.CreateCharacter("mage", "Elandra");
-            Character warrior = CharacterFactory.CreateCharacter("warrior", "Gorim");
+            ICharacter mage = CharacterFactory.CreateCharacter("mage", "Elandra");
+            ICharacter warrior = CharacterFactory.CreateCharacter("warrior", "Gorim");
             world.Characters.Add(mage);
             world.Characters.Add(warrior);
             Console.WriteLine("Characters created and added to the world.\n");
@@ -55,7 +55,7 @@ namespace Fantasy_Game_Simulation {
 
             // Characters use skills
             Console.WriteLine("\nCharacters demonstrating their skills:");
-            foreach (Character character in world.Characters) {
+            foreach (ICharacter character in world.Characters) {
                 Console.WriteLine($"\n{character.Name}'s Skills:");
                 foreach (ISkill skill in character.Skills) {
                     skill.UseSkill();
