@@ -26,8 +26,23 @@ namespace Fantasy_Game_Simulation {
             Console.WriteLine($"Current Level: {CurrentLevel}");
             Console.WriteLine($"Environment: {Environment}");
             Console.WriteLine("Characters in the game:");
-            foreach (ICharacter character in Characters) {
-                character.DisplayStats();
+            if (Characters.Count() == 0) {
+                Console.WriteLine("No characters available.");
+            } else {
+                foreach (ICharacter character in Characters) {
+                    character.DisplayStats();
+                }
+            }
+        }
+
+        public void DisplayCharacterStats() {
+            if (Characters.Count() == 0) {
+                Console.WriteLine("No characters available.");
+            } else {
+                Console.WriteLine("Character Stats:");
+                foreach (ICharacter character in Characters) {
+                    character.DisplayStats();
+                }
             }
         }
     }

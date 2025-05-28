@@ -5,64 +5,127 @@ using Fantasy_Game_Simulation.SkillModels;
 namespace Fantasy_Game_Simulation {
     internal class Program {
         static void Main(string[] args) {
-            Console.WriteLine("=== Welcome to the Fantasy Game Simulation ===\n");
-
-            // Singleton: Game World
             Console.WriteLine("Initializing Game World...");
-            GameState world = GameState.GetInstance();
-            world.Environment = "Mystic Ruins";
-            world.CurrentLevel = 1;
-            Console.WriteLine("Game World Initialized.\n");
+            Console.WriteLine();
 
-            // Factory: Character Creation
-            Console.WriteLine("Creating characters using the Factory Pattern...");
+            GameState game = GameState.GetInstance();
+            game.Environment = "Dark Forest";
+            game.DisplayWorldStatus();
+            Console.WriteLine();
+
+            Console.WriteLine("\nCreating Characters using Factory...");
+            Console.WriteLine();
+
+            ICharacter warrior = CharacterFactory.CreateCharacter("warrior", "Thorgar");
             ICharacter mage = CharacterFactory.CreateCharacter("mage", "Elandra");
-            ICharacter warrior = CharacterFactory.CreateCharacter("warrior", "Gorim");
-            world.Characters.Add(mage);
-            world.Characters.Add(warrior);
-            Console.WriteLine("Characters created and added to the world.\n");
+            ICharacter archer = CharacterFactory.CreateCharacter("archer", "Lyra");
 
-            // Inventory: Repository
-            Console.WriteLine("Initializing inventory and adding items...");
-            IInventoryRepository inventory = new InventoryRepository();
-            inventory.AddItem(new Item("Sword of Truth", "Weapon"));
-            inventory.AddItem(new Item("Healing Potion", "Potion"));
-            inventory.AddItem(new Item("Orb of Vision", "Artifact"));
-            Console.WriteLine("Items added to inventory.\n");
+            game.Characters.AddRange(new[] { warrior, mage, archer });
 
-            // Adapter: Adapting legacy skill
-            Console.WriteLine("Adapting legacy skill to new skill system...");
-            LegacySkill oldSkill = new LegacySkill("Ancient Blast", 50);
-            ISkill adaptedSkill = new LegacySkillAdapter(oldSkill);
-            Console.WriteLine("Legacy skill adapted.\n");
+            Console.WriteLine("Characters created:");
+            Console.WriteLine();
 
-            // Assign Skills
-            Console.WriteLine("Assigning skills to characters...");
+            game.DisplayCharacterStats();
+            Console.WriteLine();
+
+            Console.WriteLine("\nAssigning Skills...");
+            Console.WriteLine();
+
             ISkill fireball = new Fireball();
+            ISkill frostRay = new FrostRay();
+            LegacySkill legacySkill = new LegacySkill("Lightning Strike", 50);
+            ISkill adaptedLegacySkill = new LegacySkillAdapter((LegacySkill)legacySkill);
+
             mage.Skills.Add(fireball);
-            warrior.Skills.Add(adaptedSkill);
-            Console.WriteLine("Skills assigned.\n");
+            mage.Skills.Add(adaptedLegacySkill);
+            archer.Skills.Add(frostRay);
 
-            // Display Game World State
-            Console.WriteLine("Displaying current game world state:");
-            world.DisplayWorldStatus();
+            Console.WriteLine($"{mage.Name} learned: {fireball.Name}, {adaptedLegacySkill.Name}");
+            Console.WriteLine($"{archer.Name} learned: {frostRay.Name}");
+            Console.WriteLine();
 
-            // Display Inventory
-            Console.WriteLine("\nDisplaying inventory items:");
+            Console.WriteLine("\nInitializing Inventory Repository...");
+            Console.WriteLine();
+
+            IInventoryRepository inventory = new InventoryRepository();
+
+            inventory.AddItem(new Item("Health Potion", "Consumable"));
+            inventory.AddItem(new Item("Iron Sword", "Weapon"));
+            inventory.AddItem(new Item("Mana Crystal", "Consumable"));
+
+            Console.WriteLine("Inventory Items:");
             foreach (Item item in inventory.GetItems()) {
-                Console.WriteLine($"- {item.Type}: {item.Name}");
+                Console.WriteLine($"- {item.Name} ({item.Type})");
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("\nRemoving Mana Crystal from inventory...");
+            inventory.RemoveItem("Mana Crystal");
+            Console.WriteLine();
+
+            Console.WriteLine("Updated Inventory:");
+            foreach (Item item in inventory.GetItems()) {
+                Console.WriteLine($"- {item.Name} ({item.Type})");
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("Adding to the inventory...");
+            inventory.AddItem(new Item("Elven Bow", "Weapon"));
+            Console.WriteLine();
+
+            Console.WriteLine("Updated Inventory:");
+            foreach (Item item in inventory.GetItems()) {
+                Console.WriteLine($"- {item.Name} ({item.Type})");
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("\nCombat Simulation:");
+            Console.WriteLine();
+
+            if (mage.IsAlive() && warrior.IsAlive()) {
+                Console.WriteLine($"{mage.Name} uses {fireball.Name} on {warrior.Name}.");
+                fireball.UseSkill();
+                fireball.DealDamage(30, warrior);
+                warrior.IsAlive();
+                Console.WriteLine();
             }
 
-            // Characters use skills
-            Console.WriteLine("\nCharacters demonstrating their skills:");
-            foreach (ICharacter character in world.Characters) {
-                Console.WriteLine($"\n{character.Name}'s Skills:");
-                foreach (ISkill skill in character.Skills) {
-                    skill.UseSkill();
-                }
+            if (archer.IsAlive() && mage.IsAlive()) {
+                Console.WriteLine($"\n{archer.Name} uses {frostRay.Name} on {mage.Name}.");
+                frostRay.UseSkill();
+                frostRay.DealDamage(40, mage);
+                mage.IsAlive();
+                Console.WriteLine();
             }
 
-            Console.WriteLine("\n=== Simulation Complete ===");
+            if (mage.IsAlive() && archer.IsAlive()) {
+                Console.WriteLine($"\n{mage.Name} uses {adaptedLegacySkill.Name} on {archer.Name}.");
+                adaptedLegacySkill.UseSkill();
+                adaptedLegacySkill.DealDamage(50, archer);
+                archer.IsAlive();
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("\nSimulating Game Level Up...");
+            Console.WriteLine();
+            game.CurrentLevel++;
+            game.Environment = "Ancient Ruins";
+            Console.WriteLine($"Game progressed to Level {game.CurrentLevel} in {game.Environment}");
+            Console.WriteLine();
+
+            Console.WriteLine("\nFinal Character Status:");
+            Console.WriteLine();
+
+            foreach (ICharacter character in game.Characters) {
+                character.IsAlive();
+                character.DisplayStats();
+                Console.WriteLine();
+            }
+
+            game.DisplayWorldStatus();
+            Console.WriteLine();
+
+            Console.WriteLine("\nGame Simulation Complete.");
         }
     }
 }
